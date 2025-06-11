@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 MODEL = "openai/gpt-3.5-turbo"
 EXCEL_FILE = "chat_log.xlsx"
 
