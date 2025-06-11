@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 import requests
 from flask_cors import CORS
 from openpyxl import Workbook, load_workbook
-from openpyxl.utils import get_column_letter
 from datetime import datetime
 import os
 
@@ -53,17 +52,19 @@ def chat():
         ]
     }
 
-    response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
+    try:
+        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=10)
+    except Exception as e:
+        return jsonify({"response": f"Failed to connect to OpenRouter API: {str(e)}"}), 500
 
     if response.status_code == 200:
         reply = response.json()["choices"][0]["message"]["content"]
         log_to_excel(user_input, reply)
         return jsonify({"response": reply})
     else:
-        print(response.status_code)
-        print(response.text)
+        print("Status code:", response.status_code)
+        print("Error text:", response.text)
         return jsonify({"response": f"Error: {response.status_code}, {response.text}"}), response.status_code
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
-
