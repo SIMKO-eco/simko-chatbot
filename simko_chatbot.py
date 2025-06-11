@@ -65,4 +65,5 @@ def chat():
         return jsonify({"response": f"Error: {response.status_code}, {response.text}"}), response.status_code
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=8000)
+
